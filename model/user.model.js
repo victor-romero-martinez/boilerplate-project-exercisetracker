@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
         minLenght: 3
     },
-    logs: LogsSchema
+    logs: [LogsSchema]
 });
 
 const User = mongoose.model('User', UserSchema);

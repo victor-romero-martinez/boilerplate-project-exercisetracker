@@ -7,14 +7,28 @@ const getUser = (req, res) => {
     const { _id } = req.params
 
     User.findById(_id)
-        .then(user => res.status(200).json(user))
+        .select({
+            _id: 1,
+            username: 1,
+            __v: 1
+        })
+        .exec()
+        .then(user => {
+            if (!user) return res.status(404).json({ error: 'User not found' })
+
+            res.status(200).json(user)
+        })
         .catch(_err => res.status(404).json({ error: "Couldn't find a user" }))
 }
 
 /** @type {ControllerParams} */
 const getUsers = (req, res) => {
     User.find()
-        .select({ username: 1, _id: 1, __v: 1 })
+        .select({
+            _id: 1,
+            username: 1,
+            __v: 1
+        })
         .exec()
         .then(users => res.status(200).json(users))
         .catch(err => res.status(404).json({ error: err?.message }))
@@ -22,7 +36,7 @@ const getUsers = (req, res) => {
 
 /** @type {ControllerParams} */
 const postUser = (req, res) => {
-    let body = ""
+    let body = "";
 
     req.on('data', chunk => body += chunk.toString());
 
@@ -37,14 +51,10 @@ const postUser = (req, res) => {
     })
 }
 
-/** @type {ControllerParams} */
-const postLogs = (req, res) => { }
-
 module.exports = {
     getUser,
     getUsers,
-    postUser,
-    postLogs
+    postUser
 }
 
 /**
